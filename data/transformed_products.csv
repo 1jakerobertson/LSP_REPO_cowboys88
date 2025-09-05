@@ -1,0 +1,9 @@
+ProductID,Name,Price,Category,PriceRange
+1,PHONE,719.99,Premium Electronics,Premium
+2,NOTEBOOK,4.50,Stationery,Low
+3,TV,495.00,Electronics,High
+4,PEN,1.25,Stationery,Low
+5,HEADPHONES,108.00,Electronics,High
+6,COFFEE,9.99,Groceries,Low
+7,LAPTOP,899.55,Premium Electronics,Premium
+8,CABLE,13.50,Electronics,Medium
