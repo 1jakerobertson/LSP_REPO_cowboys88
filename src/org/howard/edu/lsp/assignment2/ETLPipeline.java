@@ -1,105 +1,51 @@
 package org.howard.edu.lsp.assignment2;
 
-import java.io.*;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.nio.file.*;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Stream;
 
 public class ETLPipeline {
-    private static final String HEADER = "ProductID,Name,Price,Category,PriceRange";
-
     public static void main(String[] args) {
-        Path input = Paths.get("data", "products.csv");   
+        Path input  = Paths.get("data", "products.csv");
         Path output = Paths.get("data", "transformed_products.csv");
 
-        if (!Files.exists(input)) {
-            System.err.println("ERROR: Input file not found at " + input.toAbsolutePath());
-            return;
-        }
+        AtomicLong rowsRead = new AtomicLong();
+        AtomicLong rowsTransformed = new AtomicLong();
+        AtomicLong rowsSkipped = new AtomicLong();
 
-        long rowsRead = 0, rowsTransformed = 0, rowsSkipped = 0;
+        ProductTransformer transformer = new ProductTransformer();
 
-        try (
-            BufferedReader reader = Files.newBufferedReader(input);
-            BufferedWriter writer = Files.newBufferedWriter(output,
-                java.nio.charset.StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
-        ) {
-            
-            writer.write(HEADER);
-            writer.newLine();
+        try (ProductReader reader = new CsvProductReader(input);
+             CsvProductWriter writer = new CsvProductWriter(output)) {
 
-        
-            String line = reader.readLine();
-
-            while ((line = reader.readLine()) != null) {
-                rowsRead++;
-                if (line.isBlank()) {
-                    rowsSkipped++;
-                    continue;
-                }
-
-                String[] cols = line.split(",", -1);
-                if (cols.length != 4) {
-                    rowsSkipped++;
-                    continue;
-                }
-
-                int productId;
-                BigDecimal price;
-                try {
-                    productId = Integer.parseInt(cols[0].trim());
-                    price = new BigDecimal(cols[2].trim());
-                } catch (Exception e) {
-                    rowsSkipped++;
-                    continue;
-                }
-
-                String name = cols[1].trim().toUpperCase();
-                String category = cols[3].trim();
-                String originalCategory = category;
-
-                
-                if (originalCategory.equalsIgnoreCase("Electronics")) {
-                    price = price.multiply(new BigDecimal("0.90"));
-                }
-
-                
-                price = price.setScale(2, RoundingMode.HALF_UP);
-
-                
-                if (originalCategory.equalsIgnoreCase("Electronics")
-                        && price.compareTo(new BigDecimal("500.00")) > 0) {
-                    category = "Premium Electronics";
-                }
-
-                
-                String priceRange;
-                if (price.compareTo(new BigDecimal("10.00")) <= 0) {
-                    priceRange = "Low";
-                } else if (price.compareTo(new BigDecimal("100.00")) <= 0) {
-                    priceRange = "Medium";
-                } else if (price.compareTo(new BigDecimal("500.00")) <= 0) {
-                    priceRange = "High";
-                } else {
-                    priceRange = "Premium";
-                }
-
-                
-                writer.write(productId + "," + name + "," + price + "," + category + "," + priceRange);
-                writer.newLine();
-                rowsTransformed++;
+            try (Stream<String> lines = reader.lines()) {
+                lines.forEach(line -> {
+                    rowsRead.incrementAndGet();
+                    Product p = transformer.fromCsv(line);
+                    if (p == null) {
+                        rowsSkipped.incrementAndGet();
+                        return;
+                    }
+                    String out = transformer.toCsv(p);
+                    try {
+                        writer.writeLine(out);
+                        rowsTransformed.incrementAndGet();
+                    } catch (IOException e) {
+                        rowsSkipped.incrementAndGet();
+                    }
+                });
             }
 
-            
             System.out.println("----- RUN SUMMARY -----");
-            System.out.println("Rows read:        " + rowsRead);
-            System.out.println("Rows transformed: " + rowsTransformed);
-            System.out.println("Rows skipped:     " + rowsSkipped);
+            System.out.println("Rows read:        " + rowsRead.get());
+            System.out.println("Rows transformed: " + rowsTransformed.get());
+            System.out.println("Rows skipped:     " + rowsSkipped.get());
             System.out.println("Output written:   " + output.toAbsolutePath());
 
         } catch (IOException e) {
-            System.err.println("ERROR processing file: " + e.getMessage());
+            System.err.println("ERROR: " + e.getMessage());
         }
     }
 }

@@ -1,0 +1,10 @@
+package org.howard.edu.lsp.assignment2;
+
+import java.io.IOException;
+import java.util.stream.Stream;
+
+public interface ProductReader extends AutoCloseable {
+    Stream<String> lines() throws IOException;  // raw CSV lines (excluding header)
+    String header();
+    @Override void close() throws IOException;
+}
