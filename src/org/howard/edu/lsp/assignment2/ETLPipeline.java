@@ -9,8 +9,8 @@ public class ETLPipeline {
     private static final String HEADER = "ProductID,Name,Price,Category,PriceRange";
 
     public static void main(String[] args) {
-        Path input = Paths.get("../data/products.csv");   
-        Path output = Paths.get("../data/transformed_products.csv");
+        Path input = Paths.get("data", "products.csv");   
+        Path output = Paths.get("data", "transformed_products.csv");
 
         if (!Files.exists(input)) {
             System.err.println("ERROR: Input file not found at " + input.toAbsolutePath());
