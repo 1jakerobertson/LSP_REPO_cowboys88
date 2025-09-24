@@ -1,0 +1,32 @@
+# AI_PROMPTS_A3
+
+## Overview
+This document explains the sequence of AI prompts I used while developing and improving my ETL pipeline project. The prompts show how I iteratively solved errors, fixed environment issues, and then refactored the code into a more object-oriented design.
+
+## File Path Errors
+
+- Ran into a couple problems when restructring my files, led to me needing to edit my file paths
+
+Prompt: Shared my full ETLPipeline.java and asked why it couldn’t find products.csv.
+
+AI Guidance: Diagnosed that ../data/products.csv pointed to the wrong location. Suggested two fixes:
+
+Run from src so ../data works.
+
+Or change code to Paths.get("data", "products.csv") so the program runs cleanly from the project root.
+
+
+## OOP Refractor Request
+AI Guidance: Broke the pipeline into multiple classes with single responsibilities:
+
+Product (model class)
+
+ProductReader / CsvProductReader
+
+ProductTransformer
+
+CsvProductWriter
+
+ETLPipeline (orchestrator with main)
+
+This modular design makes the program more reusable, testable, and closer to real-world OOP practices.

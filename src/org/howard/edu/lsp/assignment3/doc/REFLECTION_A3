@@ -1,0 +1,36 @@
+# Reflection – Assignment 3
+## Comparing Assignment 2 and Assignment 3
+
+In Assignment 2, I implemented my ETL pipeline in a mostly procedural style. The entire program lived inside a single class, ETLPipeline, and almost all the logic was written directly in the main method. That approach worked and successfully read products.csv, transformed the data according to the given rules, and wrote a new file transformed_products.csv. However, it mixed together many responsibilities—file input/output, transformation logic, and program orchestration were all handled in one place. This made the code functional but not very modular or reusable.
+
+In Assignment 3, I refactored the same program into a more object-oriented (OOP) design. I introduced new classes such as Product, ProductTransformer, CsvProductReader, and CsvProductWriter. Each class has a clear, single responsibility. For example, the Product class encapsulates product data; the transformer knows only how to apply business rules; the reader and writer handle input and output independently. ETLPipeline is now a coordinator that ties all the pieces together rather than doing the work itself.
+
+The biggest design difference is separation of concerns. Assignment 2 was monolithic, while Assignment 3 is modular. This separation makes the program easier to read, test, and maintain.
+
+# Object-Oriented Principles Used
+
+Objects and Classes: The Product class models each row from the CSV file as an object with fields like id, name, price, and category. Each row is no longer just a string of text but a meaningful object.
+
+Encapsulation: The details of how a product’s price and category are transformed are hidden inside ProductTransformer. External classes do not need to know about the discount calculation or how price ranges are assigned. Similarly, file handling is encapsulated in the reader and writer classes.
+
+Polymorphism: I defined ProductReader as an interface. Right now, I only implemented CsvProductReader, but in the future, a different reader (e.g., DatabaseProductReader) could be swapped in without changing ETLPipeline. This is a practical example of polymorphism and programming to an interface.
+
+Inheritance: Although inheritance was not heavily required for this assignment, the ProductReader interface sets up a design where future readers could extend or implement the same base type. In that sense, the design anticipates inheritance and polymorphism working together.
+
+Modularity and Reuse: Each class can be reused independently. For example, ProductTransformer could be tested on a single product object without dealing with file I/O, which was impossible in Assignment 2.
+
+# Why Assignment 3 is More Object-Oriented
+
+Assignment 3 is more object-oriented because it moves away from a single main method and distributes responsibilities across collaborating objects. Instead of one method knowing about files, string parsing, business logic, and printing results, the work is divided. Each object has state and behavior relevant to its role, which matches the OOP philosophy of modeling a problem domain with interacting objects.
+
+Another advantage is testability. In Assignment 2, testing required running the whole program end to end. In Assignment 3, I could write unit tests for ProductTransformer alone by passing in mock CSV lines and checking that the returned Product objects have the correct transformed values.
+
+# Testing Assignment 3
+
+To confirm that Assignment 3 works the same as Assignment 2, I ran both programs on the same products.csv input file. In each case, the output file transformed_products.csv contained the same header and rows, with correct discounting of electronics, correct categorization of premium electronics, and correct price range assignments. I also counted the number of rows read, transformed, and skipped, and the summary matched between the two implementations.
+
+Additionally, because the new design allows component-level testing, I created small checks on the ProductTransformer to verify that a $600 electronic item was reclassified as “Premium Electronics” and that a $9.99 grocery item was categorized as “Low.” This gave me confidence that the logic inside ProductTransformer was identical to what I had coded inline in Assignment 2.
+
+# Conclusion
+
+In short, Assignment 2 gave me a working but procedural ETL pipeline, while Assignment 3 turned that solution into a well-structured object-oriented system. By introducing classes for products, transformation, reading, and writing, I applied encapsulation and prepared the design for polymorphism and possible inheritance. This design is cleaner, easier to test, and more extensible, which demonstrates the advantages of OOP compared to the procedural approach in Assignment 2.
