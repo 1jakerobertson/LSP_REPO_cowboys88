@@ -24,4 +24,7 @@ public class Main {
      * consistent—users only need to remember one name. Having separate methods like
      * circle */
 
+     // compiled with javac src\org\howard\edu\lsp\midterm\question2\AreaCalculator.java src\org\howard\edu\lsp\midterm\question2\Main.java
+
+
 }
