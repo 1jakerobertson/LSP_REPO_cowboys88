@@ -8,4 +8,12 @@ public class AreaCalculator {
         }
         return Math.PI * radius * radius;
     }
+
+    // rectangle area
+     public static double area(double width, double height) {
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("width and height must be > 0");
+        }
+        return width * height;
+    }
 }
