@@ -1,0 +1,2 @@
+OpenAI ChatGPT. Assistance with Large Scale Programming Midterm Question 4 – Device inheritance, Networked and BatteryPowered interface implementation, and rationale. October 20, 2025.
+Java SE API Documentation (java.lang). Accessed October 20, 2025.
