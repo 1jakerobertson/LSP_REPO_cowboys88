@@ -1,11 +1,11 @@
 package org.howard.edu.lsp.assignment6;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 /**
- * JUnit 5 test cases for the IntegerSet class.
+ * JUnit 4 test cases for the IntegerSet class.
  * Each public method in IntegerSet is tested with
  * typical cases and basic edge cases.
  */
@@ -83,10 +83,10 @@ public class IntegerSetTest {
         assertEquals(10, set.largest());
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testLargestThrowsOnEmpty() {
         IntegerSet set = new IntegerSet();
-        assertThrows(IllegalStateException.class, set::largest);
+        set.largest();
     }
 
     @Test
@@ -99,10 +99,10 @@ public class IntegerSetTest {
         assertEquals(3, set.smallest());
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testSmallestThrowsOnEmpty() {
         IntegerSet set = new IntegerSet();
-        assertThrows(IllegalStateException.class, set::smallest);
+        set.smallest();
     }
 
     @Test
