@@ -155,3 +155,20 @@ public class PasswordGeneratorService {
 }
 
 }
+
+    /*
+     * DESIGN PATTERN DOCUMENTATION
+     *
+     * This implementation uses the Singleton pattern and the Command pattern.
+     * The Singleton pattern ensures that only one PasswordGeneratorService
+     * instance exists in the entire program, satisfying the requirement for a
+     * single shared access point. The Command pattern is used to represent
+     * each password-generation approach as a separate command object. Each
+     * algorithm class implements the same interface and encapsulates its own
+     * generation behavior. By calling setAlgorithm(String), the active command
+     * can be swapped at runtime without changing client code. This design makes
+     * the service easily extensible, because new algorithms can be added as
+     * additional command objects without modifying the existing system. This
+     * approach meets all project expectations, including runtime selection,
+     * flexibility, and future scalability.
+     */
