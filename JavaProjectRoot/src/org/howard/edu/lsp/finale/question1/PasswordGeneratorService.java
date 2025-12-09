@@ -142,4 +142,16 @@ public class PasswordGeneratorService {
         return currentAlgorithm.generate(length);
     }
 
+    public void printSample(String algorithm, int length) {
+    setAlgorithm(algorithm);
+    String password = generatePassword(length);
+    System.out.println("[" + algorithm + "] " + password);}
+
+    public static void main(String[] args) {
+    PasswordGeneratorService s = PasswordGeneratorService.getInstance();
+    s.printSample("basic", 10);
+    s.printSample("letters", 10);
+    s.printSample("enhanced", 12);
+}
+
 }
