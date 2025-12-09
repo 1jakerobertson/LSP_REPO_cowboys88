@@ -1,40 +1,38 @@
 // J Unit Tests
 package org.howard.edu.lsp.finale.question1;
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class PasswordGeneratorServiceTest {
 
     private PasswordGeneratorService service;
 
-    @BeforeEach
+    @Before
     public void setup() {
         service = PasswordGeneratorService.getInstance();
     }
 
     @Test
     public void checkInstanceNotNull() {
-        assertNotNull(service, "getInstance() should never return null");
+        assertNotNull("getInstance() should never return null", service);
     }
 
     @Test
     public void checkSingleInstanceBehavior() {
         PasswordGeneratorService second = PasswordGeneratorService.getInstance();
         // Both references must point to the exact same object in memory
-        assertSame(service, second,
-                "PasswordGeneratorService must be a true singleton");
+        assertSame("PasswordGeneratorService must be a true singleton",
+                   service, second);
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void generateWithoutSettingAlgorithmThrowsException() {
         PasswordGeneratorService s = PasswordGeneratorService.getInstance();
-
-        assertThrows(IllegalStateException.class,
-                () -> s.generatePassword(8),
-                "Calling generatePassword before selecting an algorithm " +
-                "must throw IllegalStateException");
+        // No algorithm selected yet -> should throw IllegalStateException
+        s.generatePassword(8);
     }
 
     @Test
@@ -42,11 +40,12 @@ public class PasswordGeneratorServiceTest {
         service.setAlgorithm("basic");
         String p = service.generatePassword(10);
 
-        assertEquals(10, p.length(), "Basic algorithm must honor requested length");
+        assertEquals("Basic algorithm must honor requested length",
+                     10, p.length());
 
         for (char c : p.toCharArray()) {
-            assertTrue(Character.isDigit(c),
-                    "Basic algorithm must generate digits only, but found: " + c);
+            assertTrue("Basic algorithm must generate digits only, but found: " + c,
+                       Character.isDigit(c));
         }
     }
 
@@ -55,16 +54,16 @@ public class PasswordGeneratorServiceTest {
         service.setAlgorithm("enhanced");
         String p = service.generatePassword(12);
 
-        assertEquals(12, p.length(),
-                "Enhanced algorithm must honor requested length");
+        assertEquals("Enhanced algorithm must honor requested length",
+                     12, p.length());
 
         for (char c : p.toCharArray()) {
             boolean isDigit = (c >= '0' && c <= '9');
             boolean isUpper = (c >= 'A' && c <= 'Z');
             boolean isLower = (c >= 'a' && c <= 'z');
 
-            assertTrue(isDigit || isUpper || isLower,
-                    "Enhanced algorithm must generate only A–Z, a–z, or 0–9, but found: " + c);
+            assertTrue("Enhanced algorithm must generate only A–Z, a–z, or 0–9, but found: " + c,
+                       isDigit || isUpper || isLower);
         }
     }
 
@@ -73,12 +72,12 @@ public class PasswordGeneratorServiceTest {
         service.setAlgorithm("letters");
         String p = service.generatePassword(8);
 
-        assertEquals(8, p.length(),
-                "Letters algorithm must honor requested length");
+        assertEquals("Letters algorithm must honor requested length",
+                     8, p.length());
 
         for (char c : p.toCharArray()) {
-            assertTrue(Character.isLetter(c),
-                    "Letters algorithm must generate letters only, but found: " + c);
+            assertTrue("Letters algorithm must generate letters only, but found: " + c,
+                       Character.isLetter(c));
         }
     }
 
@@ -95,14 +94,14 @@ public class PasswordGeneratorServiceTest {
 
         // basic -> digits only
         for (char c : p1.toCharArray()) {
-            assertTrue(Character.isDigit(c),
-                    "Basic algorithm must generate digits only");
+            assertTrue("Basic algorithm must generate digits only",
+                       Character.isDigit(c));
         }
 
         // letters -> letters only
         for (char c : p2.toCharArray()) {
-            assertTrue(Character.isLetter(c),
-                    "Letters algorithm must generate letters only");
+            assertTrue("Letters algorithm must generate letters only",
+                       Character.isLetter(c));
         }
 
         // enhanced -> must be in [A–Z, a–z, 0–9]
@@ -110,9 +109,8 @@ public class PasswordGeneratorServiceTest {
             boolean isDigit = (c >= '0' && c <= '9');
             boolean isUpper = (c >= 'A' && c <= 'Z');
             boolean isLower = (c >= 'a' && c <= 'z');
-
-            assertTrue(isDigit || isUpper || isLower,
-                    "Enhanced algorithm must generate only A–Z, a–z, or 0–9");
+            assertTrue("Enhanced algorithm must generate only A–Z, a–z, or 0–9",
+                       isDigit || isUpper || isLower);
         }
     }
 }
