@@ -141,3 +141,5 @@ public class PasswordGeneratorService {
         }
         return currentAlgorithm.generate(length);
     }
+
+}
